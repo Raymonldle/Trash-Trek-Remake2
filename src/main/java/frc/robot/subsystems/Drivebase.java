@@ -16,19 +16,19 @@ public class Drivebase extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   public Drivebase() {}
 
-  CANSparkMax m_leftMaster = new CANSparkMax(0,MotorType.kBrushless);
-  CANSparkMax m_leftSlave = new CANSparkMax(1,MotorType.kBrushless);
-  
-  CANSparkMax m_rightMaster = new CANSparkMax(2,MotorType.kBrushless);
-  CANSparkMax m_rightSlave = new CANSparkMax(3,MotorType.kBrushless);
+  CANSparkMax m_rightMaster = new CANSparkMax(1,MotorType.kBrushless);
+  CANSparkMax m_rightSlave = new CANSparkMax(2,MotorType.kBrushless);
+  CANSparkMax m_leftMaster = new CANSparkMax(3,MotorType.kBrushless);
+  CANSparkMax m_leftSlave = new CANSparkMax(4,MotorType.kBrushless);
 
+  MotorController m_rightGroup = new MotorController(m_rightMaster,m_rightSlave);
+  MotorController m_leftGroup = new MotorController(m_leftMaster,m_leftSlave);
 
-  DifferentialDrive m_differentialDrive = new DifferentialDrive(m_leftMaster,m_rightMotor);
+  DifferentialDrive m_differentialDrive = new DifferentialDrive();
 
   public void arcadeDrive(double speed, double rotation){
     m_differentialDrive.arcadeDrive(speed,rotation);
   }
-
   
 
   @Override

@@ -17,36 +17,37 @@ import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Elevator extends SubsystemBase {
+public class ExampleSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
+  PIDController m_PIDController = new PIDController(1,0.1,0.1);
+  RelativeEncoder m_encoder = new RelativeEncoder();
+  CANSparkMax m_elevatorMotor = new CANSparkMax(1,MotorType.kBrushless);
+  SparkMaxLimitSwitch m_limitSwitch = new SparkMaxLimitSwitch(); 
+
   public Elevator() {
     m_encoder.setPosition(0);
-    m_elevatorMotor.setSoftLimit(SoftLimitDirection,kReverse,0);
   }
 
- public CANSparkMax m_elevatorMotor = CANSparkMax(3,MotorType.kBrushless);
- SparkMaxLimitSwitch m_lightswitch = m_elevatorMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
- public PIDController m_pid = new PIDController(1,0.1,0.1);
+  public double PIDController(double height){
+   return m_PIDController.calculate(m_encoder.getPosition(),height);
+  }
 
- public RelativeEncoder m_encoder = m_elevatorMotor.getEncoder(SparkMaxRelativeEncoder.Type.kQuadrature, 8192);
+  public double returnEncoderPos(){
+    return m_encoder.getPosition();
+  }
 
- public double setHeightWithConstraint(double height){
-  double output = m_pid.calculate(m_encoder.getPosition(), height);
-  return output;
- }
+  public boolean limitSwitchStatus(){
+    return m_lightswitch.isLimitSwitchEnable();
+  }
 
- public boolean isLimitSwitchEnable(){
-  return m_limitSwitch.isLimitSwitchEnable();
- }
-
- public double getEncoderPosition(){
-  return m_encoder.getPosition();
- }
+  
+  
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("limit switch state", isLimitSwitchEnable);
-    SmartDashboard.putNumber("Elevator Height", getEncoderPosition());
+    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Elevator Height", height);
+    SmartDashboard.putBoolean("Limit Switch Status", limitSwitchStatus);
   }
 
   @Override
